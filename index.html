@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" href="jqm/jquery.mobile-1.4.5.css" />
+        <script type="text/javascript" src="jq/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="jqm/jquery.mobile-1.4.5.js"></script>	
+		<link rel="stylesheet" href="font/stylesheet.css" type="text/css" charset="utf-8" />
+		<link rel="stylesheet" href="themes/mi_tema.min.css" />
+		<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+		<link rel="stylesheet" href="jqm/jquery.mobile.structure-1.4.5.min.css" />
+		<script src="jqm/jquery-1.11.1.min.js"></script>
+		<script src="jqm/jquery.mobile-1.4.5.min.js"></script>
+		<link rel="stylesheet" href="css/estilos.css" />
+        <script src="phonegap.js"></script>
+        <title>GastoControl</title>
+        <style>
+           
+        </style>
+	<script>
+function cargar_lista(nuevo){
+	if(!window.localStorage.getItem("la_lista")){
+		var misdts=[];
+	}
+	else{
+		misdts = localStorage.getItem("la_lista"); 
+		misdts = JSON.parse(misdts); 
+	}
+	misdts.push(nuevo); 
+	localStorage.setItem("la_lista", JSON.stringify(misdts)); 
+}
+function cargar_resumen(obj){
+	if(!window.localStorage.getItem("resumen")){
+		var resumen=[];
+		var o={total:0,suma:0};
+		resumen.push(o);
+		localStorage.setItem("resumen", JSON.stringify(resumen)); 
+	}
+	else if(obj!=undefined){
+		resumen = localStorage.getItem("resumen"); 
+		resumen = JSON.parse(resumen); 
+		var tot, sum;
+		$.each(obj, function(i, v){
+			if(i=="total"){
+				tot=v;
+			}
+			else{
+				sum=v;
+			}
+		});
+		var res=resumen;
+		$.each(resumen[0], function(indice, valor){
+			switch(indice){
+				case "total":
+					if(tot!=undefined){
+						resumen[0][indice]=tot;
+					}
+				break;
+				case "suma":
+					if(sum!=undefined){
+						resumen[0][indice]=sum;
+					}
+				break;
+			}
+		});
+		localStorage.setItem("resumen", JSON.stringify(resumen)); 
+	}
+}
+cargar_resumen();
+
+$(document).on( 'ready', function() {
+	if($(window).width() >= 320&&$(window).width() <= 799){
+		$("#eninfo").append("<figure><picture><img src='imagenes/eninfomini.png' alt='imagen'></picture></figure>");
+	}
+	else if($(window).width() >= 800){
+		$("#eninfo").append("<figure><picture><img src='imagenes/eninfo.png' alt='imagen'></picture></figure>");
+	}
+	////////////////////////////////////////////////////HOME
+	var items = window.localStorage.getItem("la_lista");
+	if (items != "undefined" && items != null && items != ""){
+		var gastos = JSON.parse(items);
+		var total=0, it=0;
+		$("#list").append("<a href='#'>Eliminar todo</a>");
+		$("#list a").css({"color":"white","text-align":"center","padding-top":"1em"});
+		$("#list a").click(function(){
+			localStorage.removeItem('la_lista');
+			localStorage.removeItem('resumen');
+			cargar_resumen();
+			location.reload();
+		});
+		$.each(gastos, function(indice, valor){
+			var table = $('<table></table>');
+			var tr = $('<tr></tr>');
+			var tr2 = $('<tr></tr>');
+			table.append(tr);
+			table.append(tr2);
+			$('#list').prepend( table );
+			$.each(valor, function(i, v){
+				var td=$("<td></td>");
+				if(i=="monto"){
+					td.html("$"+v);
+				}
+				else if(i=="tipo"){
+					switch(v){
+						case "Vivienda":
+							td.css({"background":"url('imagenes/vivienda.png') center no-repeat #E6CAA1"});
+						break;
+						case "Alimentos":
+							td.css({"background":"url('imagenes/alimentos.png') center no-repeat orange"});
+						break;
+						case "Viaticos":
+							td.css({"background":"url('imagenes/transporte.png') center no-repeat #B5A4D2"});
+						break;
+						case "Uso personal":
+							td.css({"background":"url('imagenes/uno personal.png') center no-repeat #A2D6C5"});
+							v="personal";
+						break;
+						case "Entretenimiento":
+							td.css({"background":"url('imagenes/entretenimiento.png') center no-repeat #F5AFBB"});
+						break;
+						case "Sin calificación":
+							v="Sin";
+							td.css({"background":"url('imagenes/sin categorizar.png') center no-repeat #B2DEAE"});
+						
+						break;
+					}
+					td.html(v);
+				}
+				else{
+					td.html(v);
+				}
+				switch(i){
+					case "tipo":
+					case "monto":
+					case "fecha":
+						tr.append( td );
+						if(i=="monto"){
+							total+=parseFloat(v);
+						}
+					break;
+					case "gasto":
+					case "descripcion":
+						tr2.append( td );
+					break;
+				}
+			});	
+			tr.append('<td><a id="'+it+'">X</a></td>');
+			tr.css({"border-radius":"5px"});
+			it++;
+			$("#list").append(table);
+			$("#list table").attr("data-rol","table");
+			$("#list table").addClass(function(){
+				addedClass = "lista";
+				return addedClass;
+			});
+		});
+		
+			$("#list table tr td").css({ "padding":"0 .3em", "width":"100%"});
+			$("#list table tr:first-child td:nth-child(2)").css({ "font-size":"1.2em" , "font-weight":"bold"});
+			$("#list table tr:first-child td:nth-child(3)").css({ "font-size":".9em" , "font-family":"'forgotten_futurist_rgregular'" , "font-weight":"bold", "color":"grey","padding":"0 1em"});
+			$("#list table tr:first-child td:nth-child(1)").css({ "padding":"0 30px","width":"auto","border-radius":"5px","text-indent":"-200px","overflow":"hidden"});
+			$("#list table tr:nth-child(2)").css({ "border-top":"solid grey 1px"});
+			var borrar=$("#list table tr:first-child td:nth-child(4) a");
+			$.each(borrar, function(indice, valor){
+				valor.onclick=function(){
+					var obj={};
+					var td=this.parentNode.parentNode.parentNode.getElementsByTagName("td");
+					console.log(td);
+					$.each(td, function(indice, valor){
+						switch(indice){
+							case 1:
+								obj.monto=valor.innerHTML.substring(1,valor.innerHTML.length);
+							break;
+							case 0:
+								if(valor.innerHTML=="personal"){
+									obj.tipo="Uso personal";
+								}
+								else if(valor.innerHTML=="Sin"){
+									obj.tipo="Sin calificación";
+								}
+								else{
+									obj.tipo=valor.innerHTML;
+								}
+							break;
+							case 2:
+								obj.fecha=valor.innerHTML;
+							break;
+							case 4:
+								obj.gasto=valor.innerHTML;
+							break;
+						}
+					});
+					var lista = localStorage.getItem("la_lista"); 
+					lista = JSON.parse(lista); 
+					$.each(lista, function(indice, valor){
+						if(lista[indice].monto==obj.monto&&lista[indice].tipo==obj.tipo&&lista[indice].fecha==obj.fecha&&lista[indice].gasto==obj.gasto){
+							var l = jQuery.grep(lista, function(value,ind) {
+								return ind != indice;
+							});
+							localStorage.setItem("la_lista", JSON.stringify(l));
+							var suma;
+							var res = localStorage.getItem("resumen"); 
+							res = JSON.parse(res); 
+							$.each(res[0], function(indice, valor){
+								if(indice=="suma"){
+									suma=valor;
+								}
+							});
+							suma-=lista[indice].monto;
+							var o={"suma":suma};
+							cargar_resumen(o);
+							location.reload();
+						}
+					});
+				}
+			});
+			$("#list table tr:first-child td:nth-last-child(1)").css({"padding":".5em","background":"#554E4E","color":"#FFF387"});
+			$('#list table').listview( { inset: true } );
+			$('#list table').listview( 'refresh' );
+			$("#home #caja span").html(total);
+			var res={"total":total};
+			if(total==0){
+				$("#list a").remove();
+				var p=$("<p>Recuerda ingresar primero tus ahorros.<br>No se han generado gastos aún. </p>");
+				p.css({"margin":"1em","font-size":"1.3em","text-align":"center"});
+				$("#list").append(p);	
+			}
+			cargar_resumen(res);
+	}
+	else{
+		var p=$("<p>Recuerda ingresar primero tus ahorros.<br>No se han generado gastos aún. </p>");
+		p.css({"margin":"1em","font-size":"1.3em","text-align":"center"});
+		$("#list").append(p);
+	}
+});
+//////////////////////////////////CONTACTENOS
+$(document).ready(function(){
+				var lista=[];
+				$("#contactenos form div a").click(function(){
+					var a=0,b=0,c=0;
+					var nombre = $('#nombre').val(); 
+					var mail = $('#email').val(); 
+					var fechanac = $('#fechanac').val(); 
+					if(isNaN(nombre)&&nombre.length>3){
+						a=1;
+						$("#nombre").css({"border":"azure 1px solid"});
+					}
+					else{
+						$("#nombre").css("border","red 2px solid");
+					}
+					if(isNaN(mail)){
+						for(var i=0;i<mail.length;i++){
+							if(mail.charAt(i)=="@"){
+								b++;
+							}
+							else if(mail.charAt(i)=="."){
+								b++;
+							}
+						}
+					}
+					if(b!=2){
+						$("#email").css("border","red 2px solid");
+					}
+					else{
+						$("#email").css({"border":"azure 1px solid"});
+					}
+					if(fechanac!=''){
+						$("#fechanac").css({"border":"azure 1px solid"});
+						c=1;
+					}
+					else{
+						$("#fechanac").css("border","red 2px solid");	
+					}
+					if(c&&a&&b){
+						$("#nombre").css({"border":"azure .1em solid","background":"#989C4D"});
+						$("#email").css({"border":"azure .1em solid","background":"#989C4D"});
+						$("#fechanac").css({"border":"azure .1em solid","background":"#989C4D"});
+						$("#nombre").val("");
+						$("#email").val("");
+						$("#fechanac").val("");
+						$("#contactenos form").append("<p>Mensaje enviado con éxito.</p>");
+						$("#contactenos form p").css({"display":"inline-block","color":"green","font-size":"1.1em","font-family":"Verdana","background":"rgba(255,248,12,0.7)","padding-top":"0","margin-top":".2em","float":"left","border-radius":"5px"});
+					} 
+					return false;
+					});
+					
+					$("#contactenos form div a").blur(function(){
+						if($("#contactenos form p").length){
+							$("#contactenos form p").remove();
+						}
+					});
+					
+/////////////////////////////////CREAR
+					var tipogasto="Sin calificación";
+					$(".iconos>div").click(function(){
+						$(".iconos div").css({"border":"solid white 3px"});
+						$(this).css({"border":"solid black 3px"});
+						tipogasto=$(this).next().html();
+					});
+					$("#sendnew").click(function(){
+					var b=0;
+					var gasto = $('#crear form div:nth-child(1) input').val(); 
+					var monto = $('#inmon').val(); 
+					var fecha = $('#fecha').val(); 
+					var descrip = $('#descrip').val();
+					if(fecha){
+						b++;
+						$("#crear form fieldset div:nth-child(3) input").css({"border":"azure 1px solid"});
+						$("#crear form fieldset div:nth-child(3) input").val("");
+					}
+					if(tipogasto){
+						b++;
+						$("#crear form fieldset div select").css({"border":"azure 1px solid"});
+					}
+					if(!isNaN(monto)&&monto>0){
+						b++;
+						$("#monto").css({"border":"azure 1px solid"});
+						$("#monto").val("");
+					}
+					else{
+						$("#monto").css("border","red 2px solid");
+					}
+					if(isNaN(gasto)){
+						b++;
+						$("#crear form fieldset div:nth-child(1) input").css({"border":"azure 1px solid"});
+						$("#crear form fieldset div:nth-child(1) input").val("");
+					}
+					else{
+						$("#crear form fieldset div:nth-child(1) input").css("border","red 2px solid");
+					}
+					if(descrip){
+						b++;
+						$("#crear form fieldset div:nth-child(4) input").css({"border":"azure 1px solid"});
+						$("#crear form fieldset div:nth-child(4) input").val("");
+					}
+					if(b>=4){
+						var fech=fecha.split("-");
+						fecha=fech[2]+"/"+fech[1]+"/"+fech[0];
+						var minilista={
+							"tipo" : tipogasto,
+							"monto" : monto,
+							"fecha" : fecha,
+							"gasto" : gasto
+						}; 
+						if(b==5){
+							minilista.descripcion=descrip;
+						}
+						cargar_lista(minilista);
+						location.reload();
+						$.mobile.navigate('#home');
+					}
+			});
+});
+
+
+$(document).on( 'ready', function() {
+	////////////////////////////////////////////////////AHORROS
+	var resumen = localStorage.getItem("resumen"); 
+			resumen = JSON.parse(resumen); 
+			var total=0,suma=0, sumalocal;
+			$.each(resumen[0], function(indice, valor){
+				if(indice=="total"){
+					total=resumen[0][indice];
+				}
+				else if(indice=="suma"){
+					sumalocal=resumen[0][indice];
+					var suma=resumen[0][indice];
+					suma-=total;
+					$("#ahorros #caja span").html(suma);
+					if(suma<0){
+						$("#ahorros #caja span").css({"color":"red"});
+						if($(window).width() >= 320&&$(window).width() <= 799){
+							$("#ahorros").append("<figure><picture><img src='imagenes/rotomini.png' alt='imagen'></picture></figure>");
+						}
+						else if($(window).width() >= 800){
+							$("#ahorros").append("<figure><picture><img src='imagenes/roto.png' alt='imagen'></picture></figure>");
+						}
+						
+					}
+					else{
+						$("#ahorros #caja span").css({"color":"#F9F9F9"});
+					}
+				}
+			});
+	$("#ahorros form a").click(function(){
+	var ahorro=$("#ahorros input").val();
+	if(!isNaN(ahorro)&&ahorro>0){
+		sumalocal+=parseFloat(ahorro);
+		res={"suma":sumalocal};
+		cargar_resumen(res);
+		location.reload();
+		$("#ahorros input").css({"border":"solid azure 1px"});
+		$("#ahorros input").val("");
+	}
+	else{
+		$("#ahorros input").css({"border":"solid red 2px"});
+	}
+	});
+});
+
+///////////////////////////////////////////////////////PORCENTAJES   
+$(document).on('ready', function () {
+	var lista = localStorage.getItem("la_lista"); 
+	lista = JSON.parse(lista); 
+	var res = localStorage.getItem("resumen"); 
+	res = JSON.parse(res);
+	var porcentajes={};
+	var viaticos=0, alimentos=0, entretenimiento=0, vivienda=0, personal=0, sincalificacion=0, p=6, sumap=0;
+	if(lista==null||!res[0].total||lista==null&&!res[0].total){
+		var p=$("<p>No se han generado gastos aún. </p>");
+		p.css({"margin":"1em","font-size":"1.3em","text-align":"center"});
+		$("#paggrafico").append(p);
+	}
+	else{
+		$.each(lista, function(indice, valor){
+			sumap+=parseFloat(lista[indice].monto);
+			switch(lista[indice].tipo){
+				case "Viaticos":	
+					viaticos+=parseFloat(lista[indice].monto);
+					porcentajes.Viaticos=viaticos;
+				break;
+				case "Alimentos":
+					alimentos+=parseFloat(lista[indice].monto);
+					porcentajes.Alimentos=alimentos;
+				break;
+				case "Entretenimiento":
+					entretenimiento+=parseFloat(lista[indice].monto);
+					porcentajes.Entretenimiento=entretenimiento;
+				break;
+				case "Vivienda":
+					vivienda+=parseFloat(lista[indice].monto);
+					porcentajes.Vivienda=vivienda;
+				break;
+				case "Uso personal":
+					personal+=parseFloat(lista[indice].monto);
+					porcentajes.personal=personal;
+				break;
+				case "Sin calificación":
+					sincalificacion+=parseFloat(lista[indice].monto);
+					porcentajes.sincalificacion=sincalificacion;
+				break;
+			}
+		});
+		$.each(porcentajes, function(i, v){
+			var ul=$("<ul></ul>");
+			if(i=="sincalificacion"){
+				var li=$("<li>Sin calificación</li>");
+			}
+			else if(i=="personal"){
+				var li=$("<li>Uso personal</li>");
+			}
+			else{
+				var li=$("<li>"+i+"</li>");
+			}
+			li.css({"letter-spacing":".2em"});
+			switch(li.html()){
+				case "Vivienda":
+					li.css({"background":"url('imagenes/vivienda.png') 90% 50% no-repeat #E6CAA1"});
+				break;
+				case "Alimentos":
+					li.css({"background":"url('imagenes/alimentos.png') 90% 50% no-repeat orange"});
+				break;
+				case "Viaticos":
+					li.css({"background":"url('imagenes/transporte.png') 90% 50% no-repeat #B5A4D2"});
+				break;
+				case "Uso personal":
+					li.css({"background":"url('imagenes/uno personal.png') 90% 50% no-repeat #A2D6C5"});
+				break;
+				case "Entretenimiento":
+					li.css({"background":"url('imagenes/entretenimiento.png') 90% 50% no-repeat #F5AFBB"});
+				break;
+				case "Sin calificación":
+					li.css({"background":"url('imagenes/sin categorizar.png') 90% 50% no-repeat #B2DEAE"});
+				break;
+			}
+			ul.append(li);
+			var porc=v*100/sumap;
+			porc=(Math.round(porc*100)/100).toFixed(2);
+			var li2=$("<li>"+porc+"%</li>");
+			li2.css({"letter-spacing":".2em","color":"black","border-color":"white","font-weight":"bold","text-align":"center"});
+			ul.append(li2);
+			$("#paggrafico h2+div").append(ul);
+			$('#paggrafico ul').listview( { inset: true } );
+			$('#paggrafico ul').listview( 'refresh' );
+		});
+	}
+	
+	$("#creador div ul li").listview( { inset: true } );
+	$("#creador div ul li").listview( "refresh" );
+});
+
+$(document).on('ready', function () {
+    $.mobile.defaultPageTransition = 'pop';
+    $('#cerrar').on('click', function () {
+        navigator.app.exitApp();
+    });
+});
+    </script>
+</head>
+
+<body>
+		<!-- PAGINA 1 -->	
+<div data-role="page" id="home" data-position="fixed" data-theme="c"  >
+
+        <div data-role="header" data-position="fixed">
+            <a id="logo" href="#home" class='ui-btn'></a>
+			<div style='float:right;overflow:hidden;margin-right:1em;'>
+				<a href="#" id="cerrar" data-role="button" data-icon="delete" data-iconpos="notext" class="ui-btn">CERRAR</a>
+			</div>
+        </div>
+         
+		 <div data-role="content" class='ui-content'>
+			<h2>GASTO TOTAL</h2>
+            <p id='caja'>$<span>0</span></p>
+			<div id="list"></div>
+		</div>
+	
+		<div data-role="footer" data-position="fixed" id='footer'>
+				<div id='ahorro' class="botones"><a href="#ahorros" class='ui-btn'>Ahorros</a></div><div class="botones"><a href="#version" id='ayuda'  class='ui-btn'>Ayuda</a></div><div class="botones"><a href="#contactenos" id='contacto' class='ui-btn'>Contacto</a></div><div class="botones"><a href="#paggrafico"  id='grafico' class='ui-btn'>Grafico</a></div><div class="botones"><a href="#crear" id='agregar' class='ui-btn'>Agregar+</a></div>
+		</div> 
+</div>
+		<!-- PAGINA 2 -->
+
+ <div data-role="page" id="crear" data-position="fixed" data-theme="c">
+
+     <div data-role="header" data-position="fixed">
+        <a id="logo" href="#home" class='ui-btn'  ></a>
+			<div style='float:right;overflow:hidden;margin-right:1em;'>
+				<a href='#' class='ui-btn' data-rel='back'  id='volver'>Regresar</a>
+			</div>
+     </div>
+     <div	data-role='content'>
+		<h2>AGREGAR GASTO</h2> 
+     
+                <form method="post" action="#">
+						<div class='ui-field-contain'>
+						<div><label>Gasto</label>
+                        <input type="text" name="gasto"  required /></div>
+                        <div><label>Monto</label>
+						<input type="number" id="inmon" name="monto" placeholder="$" required/></div>
+						<div id="iconos">
+						<label>Tipo de gasto</label>
+						<div class="separadores">
+						<div class='iconos'><div></div><p>Viaticos</p></div>
+						<div class='iconos'><div></div><p>Alimentos</p></div>
+						<div class='iconos'><div></div><p>Uso personal</p></div>
+						</div>
+						<div class="separadores">
+						<div class='iconos'><div></div><p>Entretenimiento</p></div>
+						<div class='iconos'><div></div><p>Vivienda</p></div>
+						<div class='iconos'><div></div><p>Sin calificación</p></div>
+						</div>
+						</div>
+						<div><label>Fecha</label>
+                            <input type="date" id="fecha" name="fecha"  required></div>
+					<div><a href="#" class="enviar" id="sendnew" data-role="button">Guardar</a></div>
+					</div>
+                 </form>
+	</div>
+<div data-role="footer" data-position="fixed" id='footer'>
+				<div id='ahorro' class="botones"><a href="#ahorros"  class='ui-btn'>Ahorros</a></div><div class="botones"><a href="#version" id='ayuda' class='ui-btn'>Ayuda</a></div><div class="botones"><a href="#contactenos" id='contacto'  class='ui-btn'>Contacto</a></div><div class="botones"><a href="#paggrafico"  id='grafico' class='ui-btn'>Grafico</a></div><div class="botones"><a href="#crear" id='agregar' class='ui-btn'>Agregar+</a></div>
+		</div> 
+</div>
+
+
+
+	<!--   PAGINA 3 -->
+ 
+  <div data-role="page" id="version" data-position="fixed" data-theme="c">
+     <div data-role="header" data-position="fixed">
+        <a id="logo" href="#home"   class='ui-btn'></a>
+			<div style='float:right;overflow:hidden;margin-right:1em;'>
+				<a href='#' class='ui-btn' data-rel='back'  id='volver'>Regresar</a>
+	
+			</div>
+     </div>
+     <div id="eninfo" data-role='content' class='ui-content' class="botones">
+		<h2>GASTOCONTROL</h2>
+		<p>Es una aplicación que te permitire:</p>
+		<ul>
+		<li>Controlar tus gastos a través de listas.</li>
+		<li>Ver el promedio general de tus gastos.</li>
+		<li>Llevar un control de tus ahorros.</li>
+		</ul>
+		<div><a href="#creador" id="miniinfo" class='ui-btn' data-transition="flip">Info</a></div>
+     </div>
+
+	<div data-role="footer" data-position="fixed" id='footer'>
+				<div id='ahorro' class="botones"><a href="#ahorros"  class='ui-btn'>Ahorros</a></div><div class="botones"><a href="#version" id='ayuda'  class='ui-btn'>Ayuda</a></div><div class="botones"><a href="#contactenos" id='contacto'  class='ui-btn'>Contacto</a></div><div class="botones"><a href="#paggrafico" id='grafico' class='ui-btn'>Grafico</a></div><div class="botones"><a href="#crear" id='agregar' class='ui-btn'>Agregar+</a></div>
+		</div> 
+
+ </div>
+ 
+ 	<!--   PAGINA 4 -->
+
+ <div data-role="page" id="paggrafico" data-position="fixed" data-theme="c">
+     <div data-role="header" data-position="fixed">
+        <a id="logo" href="#home"   class='ui-btn'></a>
+			<div style='float:right;overflow:hidden;margin-right:1em;'>
+				<a href='#' class='ui-btn' data-rel='back'  id='volver'>Regresar</a>
+			</div>
+     </div>
+     <div	data-role='content' class='ui-content'>
+	 <h2 style='padding-top:1em;padding-bottom:1em;'>Promedio de gastos</h2>
+	 <div></div>
+     </div>
+<div data-role="footer" data-position="fixed" id='footer'>
+				<div id='ahorro' class="botones"><a href="#ahorros" class='ui-btn'>Ahorros</a></div><div class="botones"><a href="#version" id='ayuda' class='ui-btn'>Ayuda</a></div><div class="botones"><a href="#contactenos" id='contacto'  class='ui-btn'>Contacto</a></div><div class="botones"><a href="#paggrafico"  id='grafico' class='ui-btn'>Grafico</a></div><div class="botones"><a href="#crear" id='agregar'  class='ui-btn'>Agregar+</a></div>
+		</div> 
+ </div>
+
+	<!--  PAGINA 5 -->
+	
+ <div id="contactenos" data-role="page" data-theme="c">
+ 
+ <div data-role="header" data-position="fixed">
+        <a id="logo" href="#home"   class='ui-btn'></a>
+			<div style='float:right;overflow:hidden;margin-right:1em;'>
+				<a href='#' class='ui-btn' data-rel='back'  id='volver'>Regresar</a>
+
+			</div>
+     </div>
+     <div	data-role='content' class='ui-content'>
+	 <h2 style='padding-top:1em;padding-bottom:1em;'>CONTACTENOS</h2>
+	 <form method='post' action='#'>
+		<div class='ui-field-contain'>
+           <div><label for='nombre'>Nombre</label><input type='text' name='nombre' id='nombre'   required></div>
+		     <div><label for='email'>Mail</label><input type='email' name='email' id='email' required> </div>
+						<div><label for="fechanac">Fecha de Nacimiento</label>
+                        <input type="date" name="fnac" id="fechanac"  required></div>
+		</div>
+        <div><a href="#" data-role="button" class="enviar" data-inline="true" data-theme="c">Guardar</a></div>
+     </form>
+		<p>O comuniquese con nosotros<br>Tel: 4759-9382 // 4759-2849<br>Mail: gastocontrol@tusapps.com</p>
+     </div>
+
+	<div data-role="footer" data-position="fixed" id='footer'>
+				<div id='ahorro' class="botones"><a href="#ahorros"  class='ui-btn'>Ahorros</a></div><div class="botones"><a href="#version" id='ayuda'  class='ui-btn'>Ayuda</a></div><div class="botones"><a href="#contactenos" id='contacto' class='ui-btn'>Contacto</a></div><div class="botones"><a href="#paggrafico" id='grafico' class='ui-btn'>Grafico</a></div><div class="botones"><a href="#crear" id='agregar' class='ui-btn'>Agregar+</a></div>
+		</div> 
+</div>	
+
+	<!--PAGINA 6-->
+		<div data-role="page" id="ahorros" data-theme="c">
+			<div data-role="header" data-position="fixed">
+				<a id="logo" href="#home"   class='ui-btn'></a>
+				<div style='float:right;overflow:hidden;margin-right:1em;'>
+				<a href='#' class='ui-btn' data-rel='back'  id='volver'>Regresar</a>
+			</div>
+			</div>
+			 
+			 <div data-role="content">
+			 <div id="chanchito">
+				<h2>TUS AHORROS</h2>
+				<p id='caja'>$<span>0</span></p>
+				
+				<form>
+						<input type="number" name="ahorros" placeholder="$" required />
+						<a href="#" data-role="button" class="enviar" data-theme="c">Guardar</a>
+				 </form>
+			</div>
+			</div>
+			
+			<div data-role="footer" data-position="fixed" id='footer'>
+				<div id='ahorro' class="botones"><a href="#ahorros"  class='ui-btn'>Ahorros</a></div><div class="botones"><a href="#version" id='ayuda'  class='ui-btn'>Ayuda</a></div><div class="botones"><a href="#contactenos" id='contacto'  class='ui-btn'>Contacto</a></div><div class="botones"><a href="#paggrafico"  id='grafico' class='ui-btn'>Grafico</a></div><div class="botones"><a href="#crear" id='agregar'  class='ui-btn'>Agregar+</a></div>
+		</div> 
+		</div>
+		
+		<!--  PAGINA 7-->
+		
+		
+  <div data-role="page" data-transition="flip" id="creador" data-position="fixed" data-theme="c">
+     <div data-role="header" data-position="fixed">
+        <a id="logo" href="#home"  class='ui-btn'></a>
+			<div style='float:right;overflow:hidden;margin-right:1em;'>
+				<a href='#' class='ui-btn' data-rel='back'  id='volver'>Regresar</a>
+	
+			</div>
+     </div>
+     <div	data-role='content' class='ui-content'>
+		<ul style='text-align:left;font-size:1.2em;'>
+		<li>Versión: 1.0</li>
+		<li>Carrera: Diseño Web</li>
+		<li>Materia: Tecnología de las comunicaciones II</li>
+		<li>Comisión: DWTM3A</li>
+		<li>Turno: Mañana</li>
+		<li>Año: 2015</li>
+		<li>Cuatrimestre: 2do.</li>
+		<li>Docente: Omar Toyos</li>
+		<li>Carácter de entrega: Final</li>
+		<li>Fecha: 22 de diciembre 2015</li>
+		<li>Diseño y Desarrollo: Iara Nizza</li>
+		</ul>
+     </div>
+
+	<div data-role="footer" data-position="fixed" id='footer'>
+		<div id='ahorro' class="botones"><a href="#ahorros"  class='ui-btn'>Ahorros</a></div><div class="botones"><a href="#version" id='ayuda'  class='ui-btn'>Ayuda</a></div><div class="botones"><a href="#contactenos" id='contacto' class='ui-btn'>Contacto</a></div><div class="botones"><a href="#paggrafico"  id='grafico' class='ui-btn'>Grafico</a></div><div class="botones"><a href="#crear" id='agregar'  class='ui-btn'>Agregar+</a></div>
+	</div> 
+ </div>
+		
+   </body>
+</html>

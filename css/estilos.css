@@ -1,0 +1,308 @@
+ *{padding:0;margin:0;}
+            #home ui-listview{
+                font-size:1em;
+            }
+			body{
+				background:#989C4D;
+				color:azure;
+				font-family:'forgotten_futurist_rgregular',Verdana;
+			}
+			h1{
+				
+				cursor:pointer;
+				color:#DCB34D;
+				font-size:1.5em;
+				padding-top:.2em;
+			}
+            .ui-footer-fixed, .ui-header-fixed{
+                padding: 0;
+                background-color:#2B2929;
+				border:none;
+            }
+            #home ul li a img{
+                margin:10px;
+                display:inline-block;
+                width:50%;
+                vertical-align:center;
+            }
+			.ui-footer{
+				text-align:center;
+				box-shadow:#CCA026 -1px -1px 100px;
+			}
+			.ui-header{
+				border:none;
+				box-shadow:#CCA026 1px 1px 100px;
+			}
+			.ui-header .ui-title {
+				text-align:left;
+				margin-left:0.5em;
+				margin-right:0;
+				color:#8aa263;
+				display:inline-block;
+			}
+			.enviar{
+				background:url("../imagenes/enviar.png") no-repeat;
+				width:50px;
+				float:right;
+				border:none;
+				box-shadow:none;
+				height:44px;
+			}
+			.ui-link .ui-btn-left .ui-btn .ui-shadow .ui-corner-all{
+				border:none;
+			}
+			#crear{
+				text-indent:40px;
+				overflow:hidden;
+			}
+			.ui-header .ui-btn{
+				background:url('../imagenes/cruz.png') no-repeat;
+			}
+			#agregar{
+				background:url('../imagenes/mas.png') no-repeat;
+				width:35px;
+				height:35px;
+			} 
+			.ui-footer .ui-btn, .ui-header .ui-btn, .ui-footer .ui-btn-left{
+				border:none;
+				text-indent:-300px;
+				overflow:hidden;
+				width:35px;
+				height:35px;
+				padding:0;	
+			}
+			.ui-footer p{
+				display:inline-block;
+				vertical-align:center;
+			}
+			#sendnew{
+				margin-top:2em;
+			}
+			#caja{
+				text-align:center;
+				margin-top:.5em;
+                padding:.3em .2em;
+                background:#92944F;
+				text-align:center;
+				font-size:1.5em;
+				color:#F9F9F9;
+				box-shadow: inset 18px 18px 14px -12px rgba(0,0,0,0.4);
+				border-radius:5px;
+				border:#EBC15C inset 2px;
+			}
+			h2{
+				letter-spacing:.1em;
+				text-align:center;
+				color:azure;
+			}
+			#crear .ui-header .ui-title{
+				padding-left:0;
+			}
+			#volver{
+				background:url('../imagenes/back.png') no-repeat;
+			}
+			a{
+				text-indent:-300px;
+			}
+			#crear{
+				text-indent:0;
+			}
+			#crear .ui-header a{
+				display:inline-block;
+			}
+			#crear form legend{
+				display:inline-block;
+			}
+			#home h2{
+				padding:.5em 0;
+			}
+			#version .ui-content ul{
+				margin-top:5em;
+			}
+			#version .ui-content ul li {
+				list-style:none;
+				line-height:1.5em;
+				font-size:1.2em;
+			}
+			#version .ui-content p {
+				  color:azure;
+				  text-align:center;
+				  font-size:1.6em;
+				  line-height:1.7em;
+				  padding-top:2em;
+			}
+			#contactenos p{
+				  padding-top:6em;
+				  font-size:1.3em;
+				  text-align:right;
+			}
+			#grafico{
+				background:url('../imagenes/porcentaje.png') no-repeat;
+				border:none;
+				overflow:hidden;
+				width:35px;
+				height:35px;
+				padding:0;	
+			}
+			figure{
+				text-align:center;
+			}
+			#home figure img{
+				margin-top:2em;
+				border-radius:2%;
+			}
+			#contacto p{
+				color:azure;
+			}
+			#contacto{
+				background:url('../imagenes/mensaje.png') no-repeat;
+				width:35px;
+				height:35px;
+			}
+			#ayuda{
+				background:url('../imagenes/info.png') no-repeat;
+					width:35px;
+					height:35px;
+			}
+			#miniinfo{
+				background:url('../imagenes/creador.png') no-repeat;
+				width:35px;
+				height:35px;
+				float:right;
+				padding:0!important;
+				margin:0!important;
+				padding-right:2em!important;
+				border:none!important;
+				
+			}
+			#creador div ul li{
+				list-style:none!important;
+				line-height:1.5em;
+				margin-left:1em;
+			}
+			#version div ul li{
+				list-style:circle!important;
+				margin:.8em 2em;
+			}
+			#ahorro:parent{
+				displayd:inline-block;
+			}
+			#ahorro>a{
+				background:url('../imagenes/chanchito.png') no-repeat;
+			}
+			#ayuda p{
+				color:azure;
+			}
+			#logo{
+				display:inline-block;
+				margin-top:.2em;
+				margin-left:.5em;
+				padding-left:50px;
+				color:black;
+				text-indent:0;
+				width:auto;
+				background:url('../imagenes/logo.png') no-repeat;
+			 }
+			.ui-mobile label{
+				 display:inline-block;
+				 font-size:1.2em;
+			}
+			.botones{
+				display:inline-block;
+				padding:0 3% 4% 3%;
+				height:35px;
+				width:35px;
+			}
+			.botones:nth-child(1){
+				background:#1A1A1A;
+			}
+			.botones:nth-child(2){
+				background:#343434;
+			 }
+			 .botones:nth-child(3){
+				background:#4D4D4D;
+			 }
+			 .botones:nth-child(4){
+				background:#343434;
+			 }
+			.botones:nth-child(5){
+				background:#1A1A1A;
+			 }
+			 #ahorros form{
+				margin:5%;
+				text-align:center;
+			 }
+			 tbody, tbody tr{
+				display:block;
+			 }
+			 .lista{
+				background:#EBC15C;
+				color:black;
+				display:block;
+				font-family:Arial;
+				overflow:hidden;
+			 }
+			 .ui-input-text{
+				margin:0!important;
+			 }
+			#caja{
+				margin-bottom:1em;
+			 }
+			 select:parent{
+				margin-top:.8em;
+			 }
+			 #crear form>div{
+				margin:.8em 0!important;
+			 }
+			 #iconos{
+				text-align:center;
+				margin-bottom:2em;
+			 }
+			 #iconos label{
+				margin-top:1em;
+				display:block;
+			 }
+			 #iconos .separadores div div:hover{
+				border:3px black solid;
+			 }
+			 #iconos .separadores div div{
+				border:3px white solid;
+				height:50px;
+				width:50px;
+				display:inline-block;
+				margin:.8em 1em .2em 1em;
+				text-indent:-200px;
+				overflow:hidden;
+				border-radius:5px;
+			 }
+			 .iconos{
+				display:inline-block;
+				text-align:center;
+			 }
+			 .separadores:nth-last-child(2) .iconos:nth-last-child(3) div{
+				background:url('../imagenes/transporte.png') center no-repeat #B5A4D2;
+			 }
+			 .separadores:nth-last-child(2) .iconos:nth-last-child(2) div{
+				background:url('../imagenes/alimentos.png') center no-repeat orange;
+			 }
+			 .separadores:nth-last-child(2)  .iconos:nth-last-child(1) div{
+				background:url('../imagenes/uno personal.png') center no-repeat #A2D6C5;
+			 } 
+			 .separadores:nth-last-child(1) .iconos:nth-last-child(3) div{
+				background:url('../imagenes/entretenimiento.png') center no-repeat #F5AFBB;
+			 }
+			 .separadores:nth-last-child(1)  .iconos:nth-last-child(2) div{
+				background:url('../imagenes/vivienda.png') center no-repeat #E6CAA1;
+			 }
+			 .separadores:nth-last-child(1)  .iconos:nth-last-child(1) div{
+				background:url('../imagenes/sin categorizar.png') center no-repeat #B2DEAE;
+			 }
+			 .separadores p{
+				font-size:.9em;
+			 }
+			 .separadores{
+				display:block;
+			 }
+			 #caja{
+				margin-bottom:3em;
+			 }
