@@ -1,2 +1,3 @@
 # Jquery-mobile-app
-year 2013
+
+App de control de gastos. Año 2015
